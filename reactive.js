@@ -56,7 +56,7 @@ function createReactiveObject(target) {
                 console.log('新增属性')
                 // 触发
                 trigger(target, 'add', key)
-            }else if(oldValue !== value){   // 屏蔽无意义的属性修改
+            }else if(oldValue !== value) {   // 屏蔽无意义的属性修改
                 console.log('修改属性')
                 trigger(target, 'set', key)
             }
@@ -79,7 +79,8 @@ function createReactiveObject(target) {
 
 // 收集依赖
 // target : {
-//    key: new Set() [fn, fn, fn]  
+//    key1: new Set() [fn, fn, ...]
+//    key2: new Set() [fn, fn, ...]  
 // }
 let activeEffectStacks = []
 let tragetsMap = new WeakMap()
@@ -99,6 +100,11 @@ function track(target, key) {
         }
         if(!deps.has(effect)) {
             deps.add(effect)
+            console.log('--------')
+            console.log(deps)
+            console.log(depsMap)
+            console.log(tragetsMap)
+            console.log('--------')
         }
     }
 }
@@ -108,7 +114,6 @@ function trigger(target, type, key) {
     if(depsMap) {
         let deps = depsMap.get(key)
         if(deps) {
-            console.log(deps)
             // deps存的effect依次执行
             deps.forEach(effect => {
                 effect()
@@ -138,14 +143,3 @@ function run(effect, fn) {
         activeEffectStacks.pop(effect)
     }
 }
-
-let a = reactive([1,2,3])
-a.push(4)
-console.log(a)
-
-let obj = reactive({name: 'xx'})
-// 执行两次, 先默认执行一次，第二次依赖变化执行
-effect(() => {
-    console.log(obj.name) //会调用get方法
-})
-obj.name = 'yyy'

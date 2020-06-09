@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <script src="./reactive.js"></script>
+    <script>
+        let obj = reactive({name: 'xx', demo: '11'})
+        // 执行两次, 先默认执行一次，第二次依赖变化执行
+        effect(() => {
+            console.log(obj.name) //会调用get方法
+            console.log(obj.demo)
+        })
+        obj.name = 'yyy'
+    </script>
+</body>
+</html>
